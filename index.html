@@ -7,13 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0d0d;
-    --surface: #161616;
-    --border: #2a2a2a;
-    --accent: #e8c84a;
+    --bg: #050608;
+    --surface: #101117;
+    --surface-soft: #151823;
+    --border: #262938;
+    --border-soft: #1b1e29;
+    --accent: #f0c44f;
     --accent2: #e85a4a;
-    --text: #f0ede8;
-    --muted: #888;
+    --text: #f3f4f9;
+    --muted: #8a8fa3;
     --kompas: #e85a4a;
     --suara: #4a9fe8;
   }
@@ -21,48 +23,53 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: var(--bg);
+    background: radial-gradient(circle at top, #121420 0, #050608 55%);
     color: var(--text);
     font-family: 'DM Sans', sans-serif;
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content: none;
   }
 
   header {
-    padding: 3rem 2rem 2rem;
+    padding: 2.5rem 1.5rem 1.75rem;
     text-align: center;
-    border-bottom: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
+    border-bottom: 1px solid var(--border-soft);
   }
 
   header::before {
-    content: '';
-    position: absolute;
-    top: -60px; left: 50%; transform: translateX(-50%);
-    width: 600px; height: 200px;
-    background: radial-gradient(ellipse, rgba(232,200,74,0.12) 0%, transparent 70%);
-    pointer-events: none;
+    content: none;
   }
 
   .site-title {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-size: clamp(2.2rem, 5.2vw, 3.4rem);
     font-weight: 900;
-    letter-spacing: -2px;
-    line-height: 1;
-    margin-bottom: 0.5rem;
+    letter-spacing: -0.06em;
+    line-height: 1.05;
+    margin-bottom: 0.6rem;
   }
 
-  .site-title span:first-child { color: var(--kompas); }
-  .site-title .sep { color: var(--accent); margin: 0 0.2em; }
-  .site-title span:last-child { color: var(--suara); }
+  .site-title span:first-child {
+    color: var(--kompas);
+  }
+  .site-title .sep {
+    color: var(--accent);
+    margin: 0 0.22em;
+  }
+  .site-title span:last-child {
+    color: var(--suara);
+  }
 
   .tagline {
     color: var(--muted);
-    font-size: 0.9rem;
-    letter-spacing: 0.1em;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    margin-bottom: 2rem;
+    margin-bottom: 1.9rem;
   }
 
   .search-wrap {
@@ -73,44 +80,57 @@
 
   .search-input {
     width: 100%;
-    padding: 1rem 1.5rem;
-    padding-right: 7rem;
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 4px;
+    padding: 1rem 1.6rem;
+    padding-right: 7.2rem;
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    border-radius: 999px;
     color: var(--text);
     font-family: 'DM Sans', sans-serif;
-    font-size: 1rem;
+    font-size: 0.98rem;
     outline: none;
-    transition: border-color 0.2s;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.75);
+    transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
   }
 
-  .search-input:focus { border-color: var(--accent); }
+  .search-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 22px 55px rgba(0,0,0,0.85);
+    background: #191c28;
+  }
   .search-input::placeholder { color: var(--muted); }
 
   .search-btn {
     position: absolute;
     right: 6px; top: 50%; transform: translateY(-50%);
-    background: var(--accent);
-    color: #000;
+    background: linear-gradient(135deg, #f5d56b, #f0b64e);
+    color: #19130a;
     border: none;
-    border-radius: 2px;
-    padding: 0.55rem 1.2rem;
+    border-radius: 999px;
+    padding: 0.55rem 1.35rem;
     font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
-    font-size: 0.85rem;
+    font-weight: 600;
+    font-size: 0.8rem;
     cursor: pointer;
-    letter-spacing: 0.05em;
-    transition: opacity 0.2s;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    box-shadow: 0 10px 26px rgba(0,0,0,0.75);
+    transition: background 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
   }
 
-  .search-btn:hover { opacity: 0.85; }
+  .search-btn:hover {
+    box-shadow: 0 12px 30px rgba(0,0,0,0.85);
+    filter: brightness(1.03);
+  }
+  .search-btn:active {
+    box-shadow: 0 6px 16px rgba(0,0,0,0.7);
+  }
 
   .source-pills {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.45rem;
     justify-content: center;
-    margin-top: 1rem;
+    margin-top: 1.1rem;
     flex-wrap: wrap;
   }
 
@@ -118,87 +138,101 @@
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    padding: 0.3rem 0.8rem;
-    border-radius: 100px;
-    font-size: 0.78rem;
+    padding: 0.3rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.76rem;
     font-weight: 500;
     cursor: pointer;
     user-select: none;
-    border: 1.5px solid transparent;
-    transition: all 0.2s;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: #11131b;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.6);
+    transition: border-color 0.14s ease, color 0.14s ease, background 0.14s ease, opacity 0.1s ease;
+    opacity: 0.9;
   }
 
-  .pill.kompas { border-color: var(--kompas); color: var(--kompas); }
-  .pill.kompas.active { background: var(--kompas); color: #fff; }
-  .pill.suara { border-color: var(--suara); color: var(--suara); }
-  .pill.suara.active { background: var(--suara); color: #fff; }
+  .pill:hover {
+    opacity: 1;
+    border-color: #3b3f52;
+    background: #151824;
+  }
 
-  /* Generic pill active fallback + per-source colors */
-  .pill { border-color: #555; color: #999; }
-  .pill.active { background: #555; color: #fff; }
+  /* Active state + per-source glow */
+  .pill.active {
+    color: #fff;
+    border-color: var(--border-soft);
+    background: #1a1d29;
+    opacity: 1;
+  }
 
-  .pill[data-source="rri"]            { border-color: #e06c3a; color: #e06c3a; }
-  .pill[data-source="rri"].active     { background: #e06c3a; color: #fff; }
-  .pill[data-source="antara"]         { border-color: #3ab5e0; color: #3ab5e0; }
-  .pill[data-source="antara"].active  { background: #3ab5e0; color: #fff; }
-  .pill[data-source="tribun"]         { border-color: #e03a3a; color: #e03a3a; }
-  .pill[data-source="tribun"].active  { background: #e03a3a; color: #fff; }
-  .pill[data-source="detik"]          { border-color: #e0a83a; color: #e0a83a; }
-  .pill[data-source="detik"].active   { background: #e0a83a; color: #000; }
-  .pill[data-source="kompas"]         { border-color: var(--kompas); color: var(--kompas); }
-  .pill[data-source="kompas"].active  { background: var(--kompas); color: #fff; }
-  .pill[data-source="republika"]      { border-color: #3ae06c; color: #3ae06c; }
-  .pill[data-source="republika"].active { background: #3ae06c; color: #000; }
-  .pill[data-source="mediaindonesia"] { border-color: #a03ae0; color: #a03ae0; }
-  .pill[data-source="mediaindonesia"].active { background: #a03ae0; color: #fff; }
-  .pill[data-source="kumparan"]       { border-color: #e03aa0; color: #e03aa0; }
-  .pill[data-source="kumparan"].active { background: #e03aa0; color: #fff; }
-  .pill[data-source="tempo"]          { border-color: #e8c84a; color: #e8c84a; }
-  .pill[data-source="tempo"].active   { background: #e8c84a; color: #000; }
-  .pill[data-source="kontan"]         { border-color: #3ae0a8; color: #3ae0a8; }
-  .pill[data-source="kontan"].active  { background: #3ae0a8; color: #000; }
-  .pill[data-source="suara"]          { border-color: var(--suara); color: var(--suara); }
-  .pill[data-source="suara"].active   { background: var(--suara); color: #fff; }
+  .pill[data-source="rri"].active            { color: #e06c3a; border-color: #3a2720; }
+  .pill[data-source="antara"].active         { color: #3ab5e0; border-color: #20313c; }
+  .pill[data-source="tribun"].active         { color: #e03a3a; border-color: #3a2121; }
+  .pill[data-source="detik"].active          { color: #e0a83a; border-color: #3a3120; }
+  .pill[data-source="kompas"].active         { color: var(--kompas); border-color: #3a2420; }
+  .pill[data-source="republika"].active      { color: #3ae06c; border-color: #203a28; }
+  .pill[data-source="mediaindonesia"].active { color: #a03ae0; border-color: #2f2140; }
+  .pill[data-source="kumparan"].active       { color: #e03aa0; border-color: #3a2034; }
+  .pill[data-source="tempo"].active          { color: #e8c84a; border-color: #38351f; }
+  .pill[data-source="kontan"].active         { color: #3ae0a8; border-color: #203a33; }
+  .pill[data-source="suara"].active          { color: var(--suara); border-color: #203244; }
+
+  .pill[data-source].active {
+    background: #1a1d29;
+  }
 
   .pill .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 
   main {
     max-width: 860px;
     margin: 0 auto;
-    padding: 2rem 1.5rem 4rem;
+    padding: 2.2rem 1.5rem 4rem;
   }
 
   .status-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 1.5rem;
-    font-size: 0.82rem;
+    margin-bottom: 1.4rem;
+    font-size: 0.8rem;
     color: var(--muted);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-soft);
+    padding: 0.6rem 1rem;
+    background: #11131b;
+    box-shadow: 0 14px 34px rgba(0,0,0,0.85);
   }
 
   .results-grid {
     display: grid;
     gap: 1px;
     background: var(--border);
+    border-radius: 10px;
+    padding: 1px;
+    box-shadow: 0 22px 60px rgba(0,0,0,0.9);
   }
 
   .article-card {
-    background: var(--bg);
-    padding: 1.25rem 1.5rem;
+    background: var(--surface);
+    padding: 1.3rem 1.5rem;
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 0.5rem 1rem;
+    gap: 0.6rem 1.2rem;
     align-items: start;
     cursor: pointer;
-    transition: background 0.15s;
+    transition: background 0.15s ease, transform 0.1s ease;
     text-decoration: none;
     color: inherit;
+    border-radius: 10px;
+    border: 1px solid transparent;
   }
 
-  .article-card:hover { background: var(--surface); }
+  .article-card:hover {
+    background: #171923;
+    transform: translateY(-1px);
+    border-color: var(--border-soft);
+  }
 
   .card-source { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.35rem; }
   .card-source.rri            { color: #e06c3a; }
@@ -215,16 +249,16 @@
 
   .card-title {
     font-family: 'Playfair Display', serif;
-    font-size: 1.05rem;
+    font-size: 1.02rem;
     font-weight: 700;
     line-height: 1.4;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.32rem;
   }
 
   .card-desc {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     color: var(--muted);
-    line-height: 1.5;
+    line-height: 1.55;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -253,6 +287,10 @@
   .state-empty {
     text-align: center;
     padding: 5rem 2rem;
+    border-radius: 10px;
+    border: 1px dashed var(--border);
+    background: rgba(10,11,18,0.85);
+    box-shadow: 0 18px 46px rgba(0,0,0,0.9);
   }
 
   .state-icon {
@@ -281,6 +319,7 @@
     background: var(--accent);
     border-radius: 50%;
     animation: bounce 1s ease-in-out infinite;
+    box-shadow: none;
   }
 
   .spinner span:nth-child(2) { animation-delay: 0.15s; }
@@ -298,63 +337,76 @@
 
   .load-more button {
     background: transparent;
-    border: 1.5px solid var(--border);
+    border: 1px solid var(--border);
     color: var(--muted);
     padding: 0.65rem 2rem;
-    border-radius: 4px;
+    border-radius: 999px;
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
+    transition: border-color 0.16s, color 0.16s, background 0.16s;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
   }
 
-  .load-more button:hover { border-color: var(--accent); color: var(--accent); }
+  .load-more button:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(240,196,79,0.08);
+  }
 
   .error-msg {
     text-align: center;
-    padding: 2rem;
+    padding: 1.6rem 1.4rem;
     color: var(--accent2);
-    font-size: 0.88rem;
-    background: rgba(232,90,74,0.08);
-    border: 1px solid rgba(232,90,74,0.2);
-    border-radius: 4px;
+    font-size: 0.86rem;
+    background: rgba(50,18,22,0.92);
+    border: 1px solid rgba(232,90,74,0.4);
+    border-radius: 8px;
+    box-shadow: 0 14px 34px rgba(0,0,0,0.9);
   }
 
   /* Expanded keyword hint */
   .expand-hint {
     max-width: 640px;
-    margin: 0.5rem auto 0;
-    font-size: 0.78rem;
+    margin: 0.6rem auto 0;
+    font-size: 0.76rem;
     color: var(--accent);
     text-align: left;
-    padding-left: 0.2rem;
+    padding-left: 0.25rem;
     min-height: 1.2em;
+    opacity: 0.9;
   }
 
   /* Kamus panel */
   .kamus-toggle {
-    margin-top: 1.2rem;
+    margin-top: 1.3rem;
     background: transparent;
     border: 1px solid var(--border);
     color: var(--muted);
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem;
-    padding: 0.3rem 0.9rem;
-    border-radius: 100px;
+    font-size: 0.76rem;
+    padding: 0.34rem 1rem;
+    border-radius: 999px;
     cursor: pointer;
-    transition: color 0.2s, border-color 0.2s;
+    transition: color 0.16s, border-color 0.16s, background 0.16s;
   }
-  .kamus-toggle:hover { color: var(--accent); border-color: var(--accent); }
+  .kamus-toggle:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(240,196,79,0.08);
+  }
 
   .kamus-panel {
     display: none;
     max-width: 640px;
-    margin: 1rem auto 0;
+    margin: 1.1rem auto 0;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 10px;
     padding: 1rem 1.25rem;
     text-align: left;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.9);
   }
   .kamus-panel.open { display: block; }
 
@@ -373,31 +425,38 @@
   }
 
   .kamus-add input {
-    background: var(--bg);
+    background: #05050d;
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 6px;
     color: var(--text);
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    padding: 0.45rem 0.7rem;
+    font-size: 0.84rem;
+    padding: 0.46rem 0.75rem;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.16s, box-shadow 0.16s;
   }
-  .kamus-add input:focus { border-color: var(--accent); }
+  .kamus-add input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px rgba(245,213,107,0.4);
+  }
   .kamus-add input:first-child { width: 100px; }
   .kamus-add input:nth-child(2) { flex: 1; }
 
   .kamus-add button {
-    background: var(--accent);
-    color: #000;
+    background: linear-gradient(135deg, #f5d56b, #f0b64e);
+    color: #130f01;
     border: none;
-    border-radius: 4px;
+    border-radius: 999px;
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.82rem;
-    font-weight: 500;
-    padding: 0.45rem 0.9rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.45rem 0.95rem;
     cursor: pointer;
     white-space: nowrap;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.8);
+    transition: background 0.12s, box-shadow 0.12s;
   }
 
   .kamus-list {
@@ -410,10 +469,10 @@
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    background: var(--bg);
+    background: #11131b;
     border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 0.25rem 0.5rem 0.25rem 0.7rem;
+    border-radius: 999px;
+    padding: 0.25rem 0.55rem 0.25rem 0.7rem;
     font-size: 0.78rem;
   }
 
@@ -505,17 +564,17 @@
   <div id="expandHint" class="expand-hint"></div>
 
   <div class="source-pills">
-    <div class="pill active" data-source="rri" onclick="toggleSource('rri')"><span class="dot"></span> RRI</div>
-    <div class="pill active" data-source="antara" onclick="toggleSource('antara')"><span class="dot"></span> Antara</div>
-    <div class="pill active" data-source="tribun" onclick="toggleSource('tribun')"><span class="dot"></span> Tribun</div>
-    <div class="pill active" data-source="detik" onclick="toggleSource('detik')"><span class="dot"></span> Detik</div>
-    <div class="pill active" data-source="kompas" onclick="toggleSource('kompas')"><span class="dot"></span> Kompas</div>
-    <div class="pill active" data-source="republika" onclick="toggleSource('republika')"><span class="dot"></span> Republika</div>
-    <div class="pill active" data-source="mediaindonesia" onclick="toggleSource('mediaindonesia')"><span class="dot"></span> Media Indonesia</div>
-    <div class="pill active" data-source="kumparan" onclick="toggleSource('kumparan')"><span class="dot"></span> Kumparan</div>
-    <div class="pill active" data-source="tempo" onclick="toggleSource('tempo')"><span class="dot"></span> Tempo</div>
-    <div class="pill active" data-source="kontan" onclick="toggleSource('kontan')"><span class="dot"></span> Kontan</div>
-    <div class="pill active" data-source="suara" onclick="toggleSource('suara')"><span class="dot"></span> Suara</div>
+    <div class="pill" data-source="rri" onclick="toggleSource('rri')"><span class="dot"></span> RRI</div>
+    <div class="pill" data-source="antara" onclick="toggleSource('antara')"><span class="dot"></span> Antara</div>
+    <div class="pill" data-source="tribun" onclick="toggleSource('tribun')"><span class="dot"></span> Tribun</div>
+    <div class="pill" data-source="detik" onclick="toggleSource('detik')"><span class="dot"></span> Detik</div>
+    <div class="pill" data-source="kompas" onclick="toggleSource('kompas')"><span class="dot"></span> Kompas</div>
+    <div class="pill" data-source="republika" onclick="toggleSource('republika')"><span class="dot"></span> Republika</div>
+    <div class="pill" data-source="mediaindonesia" onclick="toggleSource('mediaindonesia')"><span class="dot"></span> Media Indonesia</div>
+    <div class="pill" data-source="kumparan" onclick="toggleSource('kumparan')"><span class="dot"></span> Kumparan</div>
+    <div class="pill" data-source="tempo" onclick="toggleSource('tempo')"><span class="dot"></span> Tempo</div>
+    <div class="pill" data-source="kontan" onclick="toggleSource('kontan')"><span class="dot"></span> Kontan</div>
+    <div class="pill" data-source="suara" onclick="toggleSource('suara')"><span class="dot"></span> Suara</div>
   </div>
 
   <!-- Date Range -->
@@ -562,7 +621,7 @@
       <div class="state-icon">🗞️</div>
       <div class="state-text">
         <strong>Mulai pencarian</strong>
-        Masukkan kata kunci untuk mencari berita dari Kompas dan Suara
+        Masukkan kata kunci untuk mencari berita dari 11 media Indonesia sekaligus
       </div>
     </div>
   </div>
@@ -591,7 +650,7 @@ Object.keys(SOURCES).forEach(k => {
     `https://news.google.com/rss/search?q=${encodeURIComponent(q)}+site:${SOURCES[k].site}&hl=id&gl=ID&ceid=ID:id`;
 });
 
-let activeSources = Object.fromEntries(Object.keys(SOURCES).map(k => [k, true]));
+let activeSources = Object.fromEntries(Object.keys(SOURCES).map(k => [k, false]));
 let allResults = [];
 let currentKeyword = '';
 let page = 0;
@@ -643,7 +702,7 @@ function renderKamus() {
       <span class="abbr">${escHtml(abbr)}</span>
       <span class="arrow">→</span>
       <span class="full">${escHtml(full)}</span>
-      <button class="del" onclick="deleteAbbr('${escHtml(abbr)}')" title="Hapus">×</button>
+      <button class="del" data-abbr="${encodeURIComponent(abbr)}" title="Hapus">×</button>
     </div>
   `).join('');
 }
@@ -807,12 +866,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   document.getElementById('inputFull').addEventListener('keydown', e => { if (e.key === 'Enter') addAbbr(); });
+  const kamusListEl = document.getElementById('kamusList');
+  if (kamusListEl) {
+    kamusListEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('.del');
+      if (btn && btn.dataset.abbr) {
+        deleteAbbr(decodeURIComponent(btn.dataset.abbr));
+      }
+    });
+  }
 });
 
 function toggleSource(src) {
   activeSources[src] = !activeSources[src];
   document.querySelector(`.pill[data-source="${src}"]`).classList.toggle('active', activeSources[src]);
   if (currentKeyword) { page = 0; renderResults(); }
+}
+
+function hasActiveSource() {
+  return Object.values(activeSources).some(Boolean);
 }
 
 async function fetchRSS(url) {
@@ -906,6 +978,18 @@ function escHtml(s) {
 async function doSearch() {
   const raw = document.getElementById('searchInput').value.trim();
   if (!raw) return;
+  if (!hasActiveSource()) {
+    document.getElementById('app').innerHTML = `<div class="error-msg">
+      Aktifkan minimal satu sumber berita sebelum mencari.
+    </div>`;
+    return;
+  }
+  if (raw.length < 3) {
+    document.getElementById('app').innerHTML = `<div class="error-msg">
+      Kata kunci terlalu pendek. Gunakan minimal 3 karakter.
+    </div>`;
+    return;
+  }
   const q = expandQuery(raw);
   currentKeyword = q;
   page = 0;
