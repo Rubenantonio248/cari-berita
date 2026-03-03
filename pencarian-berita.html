@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cari Berita — Kompas & Suara</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --border: #2a2a2a;
+    --accent: #e8c84a;
+    --accent2: #e85a4a;
+    --text: #f0ede8;
+    --muted: #888;
+    --kompas: #e85a4a;
+    --suara: #4a9fe8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  header {
+    padding: 3rem 2rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 200px;
+    background: radial-gradient(ellipse, rgba(232,200,74,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .site-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .site-title span:first-child { color: var(--kompas); }
+  .site-title .sep { color: var(--accent); margin: 0 0.2em; }
+  .site-title span:last-child { color: var(--suara); }
+
+  .tagline {
+    color: var(--muted);
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+
+  .search-wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    padding-right: 7rem;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--muted); }
+
+  .search-btn {
+    position: absolute;
+    right: 6px; top: 50%; transform: translateY(-50%);
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 2px;
+    padding: 0.55rem 1.2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.85rem;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: opacity 0.2s;
+  }
+
+  .search-btn:hover { opacity: 0.85; }
+
+  .source-pills {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .pill {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+    border: 1.5px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .pill.kompas { border-color: var(--kompas); color: var(--kompas); }
+  .pill.kompas.active { background: var(--kompas); color: #fff; }
+  .pill.suara { border-color: var(--suara); color: var(--suara); }
+  .pill.suara.active { background: var(--suara); color: #fff; }
+
+  /* Generic pill active fallback + per-source colors */
+  .pill { border-color: #555; color: #999; }
+  .pill.active { background: #555; color: #fff; }
+
+  .pill[data-source="rri"]            { border-color: #e06c3a; color: #e06c3a; }
+  .pill[data-source="rri"].active     { background: #e06c3a; color: #fff; }
+  .pill[data-source="antara"]         { border-color: #3ab5e0; color: #3ab5e0; }
+  .pill[data-source="antara"].active  { background: #3ab5e0; color: #fff; }
+  .pill[data-source="tribun"]         { border-color: #e03a3a; color: #e03a3a; }
+  .pill[data-source="tribun"].active  { background: #e03a3a; color: #fff; }
+  .pill[data-source="detik"]          { border-color: #e0a83a; color: #e0a83a; }
+  .pill[data-source="detik"].active   { background: #e0a83a; color: #000; }
+  .pill[data-source="kompas"]         { border-color: var(--kompas); color: var(--kompas); }
+  .pill[data-source="kompas"].active  { background: var(--kompas); color: #fff; }
+  .pill[data-source="republika"]      { border-color: #3ae06c; color: #3ae06c; }
+  .pill[data-source="republika"].active { background: #3ae06c; color: #000; }
+  .pill[data-source="mediaindonesia"] { border-color: #a03ae0; color: #a03ae0; }
+  .pill[data-source="mediaindonesia"].active { background: #a03ae0; color: #fff; }
+  .pill[data-source="kumparan"]       { border-color: #e03aa0; color: #e03aa0; }
+  .pill[data-source="kumparan"].active { background: #e03aa0; color: #fff; }
+  .pill[data-source="tempo"]          { border-color: #e8c84a; color: #e8c84a; }
+  .pill[data-source="tempo"].active   { background: #e8c84a; color: #000; }
+  .pill[data-source="kontan"]         { border-color: #3ae0a8; color: #3ae0a8; }
+  .pill[data-source="kontan"].active  { background: #3ae0a8; color: #000; }
+  .pill[data-source="suara"]          { border-color: var(--suara); color: var(--suara); }
+  .pill[data-source="suara"].active   { background: var(--suara); color: #fff; }
+
+  .pill .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.75rem;
+  }
+
+  .results-grid {
+    display: grid;
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .article-card {
+    background: var(--bg);
+    padding: 1.25rem 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.5rem 1rem;
+    align-items: start;
+    cursor: pointer;
+    transition: background 0.15s;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .article-card:hover { background: var(--surface); }
+
+  .card-source { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.35rem; }
+  .card-source.rri            { color: #e06c3a; }
+  .card-source.antara         { color: #3ab5e0; }
+  .card-source.tribun         { color: #e03a3a; }
+  .card-source.detik          { color: #e0a83a; }
+  .card-source.kompas         { color: var(--kompas); }
+  .card-source.republika      { color: #3ae06c; }
+  .card-source.mediaindonesia { color: #a03ae0; }
+  .card-source.kumparan       { color: #e03aa0; }
+  .card-source.tempo          { color: #e8c84a; }
+  .card-source.kontan         { color: #3ae0a8; }
+  .card-source.suara          { color: var(--suara); }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 0.3rem;
+  }
+
+  .card-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-date {
+    font-size: 0.72rem;
+    color: var(--muted);
+    white-space: nowrap;
+    margin-top: 0.2rem;
+  }
+
+  .card-arrow {
+    color: var(--muted);
+    font-size: 1.2rem;
+    align-self: center;
+    transition: transform 0.15s, color 0.15s;
+  }
+
+  .article-card:hover .card-arrow {
+    transform: translateX(3px);
+    color: var(--accent);
+  }
+
+  .state-empty {
+    text-align: center;
+    padding: 5rem 2rem;
+  }
+
+  .state-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.3;
+  }
+
+  .state-text {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .state-text strong { color: var(--text); display: block; font-size: 1.1rem; margin-bottom: 0.4rem; }
+
+  .spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5rem;
+    gap: 0.4rem;
+  }
+
+  .spinner span {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: bounce 1s ease-in-out infinite;
+  }
+
+  .spinner span:nth-child(2) { animation-delay: 0.15s; }
+  .spinner span:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); opacity: 0.4; }
+    50% { transform: translateY(-10px); opacity: 1; }
+  }
+
+  .load-more {
+    margin-top: 2rem;
+    text-align: center;
+  }
+
+  .load-more button {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--muted);
+    padding: 0.65rem 2rem;
+    border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .load-more button:hover { border-color: var(--accent); color: var(--accent); }
+
+  .error-msg {
+    text-align: center;
+    padding: 2rem;
+    color: var(--accent2);
+    font-size: 0.88rem;
+    background: rgba(232,90,74,0.08);
+    border: 1px solid rgba(232,90,74,0.2);
+    border-radius: 4px;
+  }
+
+  /* Expanded keyword hint */
+  .expand-hint {
+    max-width: 640px;
+    margin: 0.5rem auto 0;
+    font-size: 0.78rem;
+    color: var(--accent);
+    text-align: left;
+    padding-left: 0.2rem;
+    min-height: 1.2em;
+  }
+
+  /* Kamus panel */
+  .kamus-toggle {
+    margin-top: 1.2rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    padding: 0.3rem 0.9rem;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .kamus-toggle:hover { color: var(--accent); border-color: var(--accent); }
+
+  .kamus-panel {
+    display: none;
+    max-width: 640px;
+    margin: 1rem auto 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    text-align: left;
+  }
+  .kamus-panel.open { display: block; }
+
+  .kamus-panel h3 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 0.8rem;
+  }
+
+  .kamus-add {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .kamus-add input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    padding: 0.45rem 0.7rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .kamus-add input:focus { border-color: var(--accent); }
+  .kamus-add input:first-child { width: 100px; }
+  .kamus-add input:nth-child(2) { flex: 1; }
+
+  .kamus-add button {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 0.45rem 0.9rem;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .kamus-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .kamus-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem 0.25rem 0.7rem;
+    font-size: 0.78rem;
+  }
+
+  .kamus-item .abbr { color: var(--accent); font-weight: 600; }
+  .kamus-item .arrow { color: var(--muted); }
+  .kamus-item .full { color: var(--text); }
+  .kamus-item .del {
+    background: none; border: none; color: var(--muted);
+    cursor: pointer; font-size: 1rem; line-height: 1;
+    padding: 0 2px;
+    transition: color 0.15s;
+  }
+  .kamus-item .del:hover { color: var(--accent2); }
+
+  .kamus-empty { font-size: 0.78rem; color: var(--muted); }
+
+  /* ── Date Range Picker ── */
+  .date-range-wrap {
+    max-width: 640px;
+    margin: 0.8rem auto 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .date-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .date-btn {
+    display: flex; align-items: center; gap: 0.4rem;
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 4px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+    padding: 0.4rem 0.8rem; cursor: pointer; transition: border-color 0.2s; white-space: nowrap;
+  }
+  .date-btn:hover, .date-btn.active { border-color: var(--accent); color: var(--accent); }
+  .date-sep { color: var(--muted); font-size: 0.8rem; }
+  .date-clear {
+    background: none; border: none; color: var(--muted);
+    font-size: 0.75rem; cursor: pointer; padding: 0.3rem 0.5rem;
+    border-radius: 4px; transition: color 0.2s; font-family: 'DM Sans', sans-serif;
+  }
+  .date-clear:hover { color: var(--accent2); }
+
+  /* Calendar Popup */
+  .cal-overlay { position: fixed; inset: 0; z-index: 100; display: none; }
+  .cal-overlay.open { display: block; }
+  .cal-popup {
+    position: fixed; z-index: 101;
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 8px; padding: 1rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6); width: 280px;
+  }
+  .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem; }
+  .cal-nav {
+    background: none; border: none; color: var(--muted); cursor: pointer;
+    font-size: 1.1rem; padding: 0.2rem 0.5rem; border-radius: 4px; transition: color 0.15s, background 0.15s;
+  }
+  .cal-nav:hover { color: var(--accent); background: rgba(232,200,74,0.08); }
+  .cal-month-year { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .cal-day-name { text-align: center; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; padding: 0.3rem 0; letter-spacing: 0.05em; }
+  .cal-day {
+    text-align: center; font-size: 0.8rem; padding: 0.4rem 0;
+    border-radius: 4px; cursor: pointer; transition: background 0.12s, color 0.12s; color: var(--text);
+  }
+  .cal-day:hover:not(.empty):not(.disabled) { background: rgba(232,200,74,0.15); color: var(--accent); }
+  .cal-day.empty { cursor: default; }
+  .cal-day.disabled { color: var(--border); cursor: default; }
+  .cal-day.today { color: var(--accent); font-weight: 600; }
+  .cal-day.selected { background: var(--accent); color: #000 !important; font-weight: 700; }
+  .cal-day.in-range { background: rgba(232,200,74,0.12); border-radius: 0; }
+  .cal-day.range-start { background: var(--accent); color: #000 !important; font-weight: 700; border-radius: 4px 0 0 4px; }
+  .cal-day.range-end { background: var(--accent); color: #000 !important; font-weight: 700; border-radius: 0 4px 4px 0; }
+  .cal-hint { font-size: 0.72rem; color: var(--muted); margin-top: 0.6rem; text-align: center; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="site-title" style="font-size: clamp(1.8rem, 5vw, 3rem);">
+    <span>Cari</span><span class="sep"> </span><span style="color:var(--accent)">Berita</span>
+  </div>
+  <p class="tagline">Cari dari 11 media Indonesia sekaligus</p>
+
+  <div class="search-wrap">
+    <input class="search-input" id="searchInput" type="text" placeholder="Ketik kata kunci, e.g. ekonomi, pilkada, teknologi..." autocomplete="off" />
+    <button class="search-btn" id="searchBtn">Cari</button>
+  </div>
+  <div id="expandHint" class="expand-hint"></div>
+
+  <div class="source-pills">
+    <div class="pill active" data-source="rri" onclick="toggleSource('rri')"><span class="dot"></span> RRI</div>
+    <div class="pill active" data-source="antara" onclick="toggleSource('antara')"><span class="dot"></span> Antara</div>
+    <div class="pill active" data-source="tribun" onclick="toggleSource('tribun')"><span class="dot"></span> Tribun</div>
+    <div class="pill active" data-source="detik" onclick="toggleSource('detik')"><span class="dot"></span> Detik</div>
+    <div class="pill active" data-source="kompas" onclick="toggleSource('kompas')"><span class="dot"></span> Kompas</div>
+    <div class="pill active" data-source="republika" onclick="toggleSource('republika')"><span class="dot"></span> Republika</div>
+    <div class="pill active" data-source="mediaindonesia" onclick="toggleSource('mediaindonesia')"><span class="dot"></span> Media Indonesia</div>
+    <div class="pill active" data-source="kumparan" onclick="toggleSource('kumparan')"><span class="dot"></span> Kumparan</div>
+    <div class="pill active" data-source="tempo" onclick="toggleSource('tempo')"><span class="dot"></span> Tempo</div>
+    <div class="pill active" data-source="kontan" onclick="toggleSource('kontan')"><span class="dot"></span> Kontan</div>
+    <div class="pill active" data-source="suara" onclick="toggleSource('suara')"><span class="dot"></span> Suara</div>
+  </div>
+
+  <!-- Date Range -->
+  <div class="date-range-wrap">
+    <span class="date-label">Rentang:</span>
+    <button class="date-btn" id="btnDateFrom" onclick="openCal('from')">
+      📅 <span id="lblFrom">Dari tanggal</span>
+    </button>
+    <span class="date-sep">—</span>
+    <button class="date-btn" id="btnDateTo" onclick="openCal('to')">
+      📅 <span id="lblTo">Sampai tanggal</span>
+    </button>
+    <button class="date-clear" id="btnDateClear" onclick="clearDates()" style="display:none">✕ Reset</button>
+  </div>
+
+  <!-- Calendar Overlay -->
+  <div class="cal-overlay" id="calOverlay" onclick="closeCal()"></div>
+  <div class="cal-popup" id="calPopup" style="display:none">
+    <div class="cal-header">
+      <button class="cal-nav" onclick="calPrev()">‹</button>
+      <span class="cal-month-year" id="calMonthYear"></span>
+      <button class="cal-nav" onclick="calNext()">›</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="cal-hint" id="calHint"></div>
+  </div>
+
+  <button class="kamus-toggle" onclick="toggleKamus()">📖 Kamus Singkatan</button>
+
+  <div class="kamus-panel" id="kamusPanel">
+    <h3>Daftar Singkatan</h3>
+    <div class="kamus-add">
+      <input type="text" id="inputAbbr" placeholder="Singkatan" maxlength="20" />
+      <input type="text" id="inputFull" placeholder="Kepanjangan" />
+      <button onclick="addAbbr()">+ Tambah</button>
+    </div>
+    <div class="kamus-list" id="kamusList"></div>
+  </div>
+</header>
+
+<main>
+  <div id="app">
+    <div class="state-empty">
+      <div class="state-icon">🗞️</div>
+      <div class="state-text">
+        <strong>Mulai pencarian</strong>
+        Masukkan kata kunci untuk mencari berita dari Kompas dan Suara
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const PROXY = 'https://api.allorigins.win/get?url=';
+
+const SOURCES = {
+  rri:            { name: 'RRI',             site: 'rri.co.id' },
+  antara:         { name: 'Antara',          site: 'antaranews.com' },
+  tribun:         { name: 'Tribun',          site: 'tribunnews.com' },
+  detik:          { name: 'Detik',           site: 'detik.com' },
+  kompas:         { name: 'Kompas',          site: 'kompas.com' },
+  republika:      { name: 'Republika',       site: 'republika.co.id' },
+  mediaindonesia: { name: 'Media Indonesia', site: 'mediaindonesia.com' },
+  kumparan:       { name: 'Kumparan',        site: 'kumparan.com' },
+  tempo:          { name: 'Tempo',           site: 'tempo.co' },
+  kontan:         { name: 'Kontan',          site: 'kontan.co.id' },
+  suara:          { name: 'Suara',           site: 'suara.com' },
+};
+
+// Build rssSearch from site
+Object.keys(SOURCES).forEach(k => {
+  SOURCES[k].rssSearch = (q) =>
+    `https://news.google.com/rss/search?q=${encodeURIComponent(q)}+site:${SOURCES[k].site}&hl=id&gl=ID&ceid=ID:id`;
+});
+
+let activeSources = Object.fromEntries(Object.keys(SOURCES).map(k => [k, true]));
+let allResults = [];
+let currentKeyword = '';
+let page = 0;
+const PAGE_SIZE = 12;
+
+// --- Kamus Singkatan ---
+const DEFAULT_KAMUS = {
+  'kdmp': 'koperasi desa merah putih',
+  'kopdes': 'koperasi desa',
+  'kades': 'kepala desa',
+  'pkk': 'Pemberdayaan Kesejahteraan Keluarga',
+  'pilkades': 'Pemilihan Kepala Desa'
+};
+
+let kamus = { ...DEFAULT_KAMUS };
+
+async function loadKamus() {
+  try {
+    const result = await window.storage.get('kamus');
+    if (result && result.value) {
+      kamus = JSON.parse(result.value);
+    }
+  } catch(e) {
+    kamus = { ...DEFAULT_KAMUS };
+  }
+  renderKamus();
+}
+
+async function saveKamus() {
+  try {
+    await window.storage.set('kamus', JSON.stringify(kamus));
+  } catch(e) { /* fallback: in-memory only */ }
+}
+
+function expandQuery(q) {
+  const lower = q.trim().toLowerCase();
+  return kamus[lower] || q;
+}
+
+function renderKamus() {
+  const list = document.getElementById('kamusList');
+  const entries = Object.entries(kamus);
+  if (!entries.length) {
+    list.innerHTML = '<span class="kamus-empty">Belum ada singkatan.</span>';
+    return;
+  }
+  list.innerHTML = entries.map(([abbr, full]) => `
+    <div class="kamus-item">
+      <span class="abbr">${escHtml(abbr)}</span>
+      <span class="arrow">→</span>
+      <span class="full">${escHtml(full)}</span>
+      <button class="del" onclick="deleteAbbr('${escHtml(abbr)}')" title="Hapus">×</button>
+    </div>
+  `).join('');
+}
+
+function addAbbr() {
+  const abbr = document.getElementById('inputAbbr').value.trim().toLowerCase();
+  const full = document.getElementById('inputFull').value.trim();
+  if (!abbr || !full) return;
+  kamus[abbr] = full;
+  saveKamus();
+  renderKamus();
+  document.getElementById('inputAbbr').value = '';
+  document.getElementById('inputFull').value = '';
+}
+
+function deleteAbbr(abbr) {
+  delete kamus[abbr];
+  saveKamus();
+  renderKamus();
+}
+
+function toggleKamus() {
+  document.getElementById('kamusPanel').classList.toggle('open');
+}
+
+// ── Date Range ──
+let dateFrom = null; // Date object
+let dateTo = null;
+let calMode = null; // 'from' | 'to'
+let calYear, calMonth;
+const MONTHS_ID = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const DAYS_ID = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+
+function fmtDate(d) {
+  if (!d) return null;
+  return `${d.getDate()} ${MONTHS_ID[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function openCal(mode) {
+  calMode = mode;
+  const now = new Date();
+  const ref = mode === 'from' ? (dateFrom || now) : (dateTo || now);
+  calYear = ref.getFullYear();
+  calMonth = ref.getMonth();
+  renderCal();
+  const popup = document.getElementById('calPopup');
+  const btn = document.getElementById(mode === 'from' ? 'btnDateFrom' : 'btnDateTo');
+  const rect = btn.getBoundingClientRect();
+  popup.style.display = 'block';
+  // Position below button
+  let top = rect.bottom + 8;
+  let left = rect.left;
+  if (left + 280 > window.innerWidth) left = window.innerWidth - 290;
+  if (top + 320 > window.innerHeight) top = rect.top - 320;
+  popup.style.top = top + 'px';
+  popup.style.left = left + 'px';
+  document.getElementById('calOverlay').classList.add('open');
+  document.getElementById(mode === 'from' ? 'btnDateFrom' : 'btnDateTo').classList.add('active');
+}
+
+function closeCal() {
+  document.getElementById('calPopup').style.display = 'none';
+  document.getElementById('calOverlay').classList.remove('open');
+  document.getElementById('btnDateFrom').classList.remove('active');
+  document.getElementById('btnDateTo').classList.remove('active');
+  calMode = null;
+}
+
+function calPrev() { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCal(); }
+function calNext() { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderCal(); }
+
+function renderCal() {
+  document.getElementById('calMonthYear').textContent = `${MONTHS_ID[calMonth]} ${calYear}`;
+  const hint = document.getElementById('calHint');
+  hint.textContent = calMode === 'from' ? 'Pilih tanggal mulai' : 'Pilih tanggal akhir';
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  let html = DAYS_ID.map(d => `<div class="cal-day-name">${d}</div>`).join('');
+
+  for (let i = 0; i < firstDay; i++) html += `<div class="cal-day empty"></div>`;
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const thisDate = new Date(calYear, calMonth, d);
+    const ts = thisDate.getTime();
+    let cls = 'cal-day';
+    if (thisDate.getTime() === today.getTime()) cls += ' today';
+
+    const fromTs = dateFrom ? new Date(dateFrom).setHours(0,0,0,0) : null;
+    const toTs = dateTo ? new Date(dateTo).setHours(0,0,0,0) : null;
+    const thisTs = new Date(calYear, calMonth, d).getTime();
+
+    if (fromTs && thisTs === fromTs && toTs && thisTs === toTs) cls += ' selected';
+    else if (fromTs && thisTs === fromTs) cls += toTs ? ' range-start' : ' selected';
+    else if (toTs && thisTs === toTs) cls += fromTs ? ' range-end' : ' selected';
+    else if (fromTs && toTs && thisTs > fromTs && thisTs < toTs) cls += ' in-range';
+
+    html += `<div class="${cls}" onclick="pickDay(${calYear},${calMonth},${d})">${d}</div>`;
+  }
+
+  document.getElementById('calGrid').innerHTML = html;
+}
+
+function pickDay(y, m, d) {
+  const picked = new Date(y, m, d);
+  if (calMode === 'from') {
+    dateFrom = picked;
+    if (dateTo && dateFrom > dateTo) dateTo = null;
+    document.getElementById('lblFrom').textContent = fmtDate(dateFrom);
+    closeCal();
+    // Auto open "to" picker if not set
+    if (!dateTo) setTimeout(() => openCal('to'), 150);
+  } else {
+    if (dateFrom && picked < dateFrom) {
+      // Swap: picked is earlier, treat as new "from"
+      dateTo = dateFrom;
+      dateFrom = picked;
+    } else {
+      dateTo = picked;
+    }
+    document.getElementById('lblFrom').textContent = fmtDate(dateFrom) || 'Dari tanggal';
+    document.getElementById('lblTo').textContent = fmtDate(dateTo);
+    closeCal();
+  }
+  document.getElementById('lblTo').textContent = fmtDate(dateTo) || 'Sampai tanggal';
+  document.getElementById('btnDateClear').style.display = (dateFrom || dateTo) ? 'inline-block' : 'none';
+  if (currentKeyword) renderResults();
+}
+
+function clearDates() {
+  dateFrom = null; dateTo = null;
+  document.getElementById('lblFrom').textContent = 'Dari tanggal';
+  document.getElementById('lblTo').textContent = 'Sampai tanggal';
+  document.getElementById('btnDateClear').style.display = 'none';
+  if (currentKeyword) renderResults();
+}
+
+function isInDateRange(dateStr) {
+  if (!dateFrom && !dateTo) return true;
+  if (!dateStr) return true;
+  const d = new Date(dateStr); d.setHours(0,0,0,0);
+  const from = dateFrom ? new Date(dateFrom).setHours(0,0,0,0) : null;
+  const to = dateTo ? new Date(dateTo).setHours(23,59,59,999) : null;
+  if (from && d < from) return false;
+  if (to && d > to) return false;
+  return true;
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadKamus();
+  document.getElementById('searchInput').addEventListener('input', function() {
+    const hint = document.getElementById('expandHint');
+    const expanded = expandQuery(this.value.trim());
+    if (expanded !== this.value.trim() && this.value.trim()) {
+      hint.textContent = `💡 Akan dicari sebagai: "${expanded}"`;
+    } else {
+      hint.textContent = '';
+    }
+  });
+  document.getElementById('inputFull').addEventListener('keydown', e => { if (e.key === 'Enter') addAbbr(); });
+});
+
+function toggleSource(src) {
+  activeSources[src] = !activeSources[src];
+  document.querySelector(`.pill[data-source="${src}"]`).classList.toggle('active', activeSources[src]);
+  if (currentKeyword) { page = 0; renderResults(); }
+}
+
+async function fetchRSS(url) {
+  // Primary: rss2json (lebih reliable, no CORS issue)
+  try {
+    const r = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}&api_key=&count=30`);
+    const d = await r.json();
+    if (d.status === 'ok' && d.items?.length) {
+      return d.items.map(item => ({
+        title: item.title || '',
+        link: item.link || '',
+        desc: (item.description || item.content || '').replace(/<[^>]+>/g, ''),
+        date: item.pubDate || '',
+      }));
+    }
+  } catch(e) {}
+
+  // Fallback: allorigins proxy
+  try {
+    const res = await fetch(PROXY + encodeURIComponent(url));
+    const data = await res.json();
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(data.contents, 'text/xml');
+    const items = xml.querySelectorAll('item');
+    return Array.from(items).map(item => ({
+      title: item.querySelector('title')?.textContent || '',
+      link: item.querySelector('link')?.textContent || '',
+      desc: (item.querySelector('description')?.textContent || '').replace(/<[^>]+>/g,''),
+      date: item.querySelector('pubDate')?.textContent || '',
+    }));
+  } catch(e) {}
+
+  return [];
+}
+
+function relativeTime(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  const diff = (Date.now() - d) / 1000;
+  if (diff < 3600) return `${Math.round(diff/60)} menit lalu`;
+  if (diff < 86400) return `${Math.round(diff/3600)} jam lalu`;
+  return `${Math.round(diff/86400)} hari lalu`;
+}
+
+function renderResults() {
+  const app = document.getElementById('app');
+  const filtered = allResults.filter(r => activeSources[r.source] && isInDateRange(r.date));
+
+  if (filtered.length === 0) {
+    app.innerHTML = `<div class="state-empty"><div class="state-icon">😶</div><div class="state-text"><strong>Tidak ada hasil</strong>Coba kata kunci lain atau aktifkan sumber berita</div></div>`;
+    return;
+  }
+
+  const shown = filtered.slice(0, (page + 1) * PAGE_SIZE);
+  const hasMore = shown.length < filtered.length;
+
+  const cards = shown.map(r => `
+    <a class="article-card" href="${r.link}" target="_blank" rel="noopener">
+      <div>
+        <div class="card-source ${r.source}">${SOURCES[r.source].name}</div>
+        <div class="card-title">${escHtml(r.title)}</div>
+        <div class="card-desc">${escHtml(r.desc)}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.3rem">
+        <div class="card-date">${relativeTime(r.date)}</div>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+  `).join('');
+
+  const dateRangeInfo = (dateFrom || dateTo)
+    ? ` · ${fmtDate(dateFrom) || '...'} — ${fmtDate(dateTo) || '...'}`
+    : '';
+
+  app.innerHTML = `
+    <div class="status-bar">
+      <span>${filtered.length} berita ditemukan untuk "<strong>${escHtml(currentKeyword)}</strong>"${escHtml(dateRangeInfo)}</span>
+      <span>Menampilkan ${shown.length}</span>
+    </div>
+    <div class="results-grid">${cards}</div>
+    ${hasMore ? `<div class="load-more"><button onclick="loadMore()">Muat lebih banyak</button></div>` : ''}
+  `;
+}
+
+function loadMore() { page++; renderResults(); }
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function doSearch() {
+  const raw = document.getElementById('searchInput').value.trim();
+  if (!raw) return;
+  const q = expandQuery(raw);
+  currentKeyword = q;
+  page = 0;
+  allResults = [];
+
+  // clear hint
+  document.getElementById('expandHint').textContent = '';
+
+  const app = document.getElementById('app');
+  app.innerHTML = `<div class="spinner"><span></span><span></span><span></span></div>`;
+
+  const fetches = Object.entries(SOURCES).map(async ([key, src]) => {
+    try {
+      const items = await fetchRSS(src.rssSearch(q));
+      return items.map(i => ({ ...i, source: key }));
+    } catch(e) { return []; }
+  });
+
+  const results = await Promise.all(fetches);
+  const bySource = {};
+  results.forEach((arr, i) => { bySource[Object.keys(SOURCES)[i]] = arr; });
+
+  const maxLen = Math.max(...Object.values(bySource).map(a => a.length));
+  for (let i = 0; i < maxLen; i++) {
+    Object.values(bySource).forEach(arr => { if (arr[i]) allResults.push(arr[i]); });
+  }
+
+  if (allResults.length === 0) {
+    app.innerHTML = `<div class="error-msg">
+      Tidak ada hasil untuk "<strong>${escHtml(q)}</strong>".<br>
+      <small style="opacity:0.7">Kemungkinan: kata kunci terlalu spesifik, atau layanan RSS sedang lambat. Coba beberapa saat lagi.</small>
+    </div>`;
+    return;
+  }
+
+  renderResults();
+}
+
+document.getElementById('searchBtn').addEventListener('click', doSearch);
+document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+</script>
+</body>
+</html>
